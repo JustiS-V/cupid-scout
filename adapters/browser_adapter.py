@@ -32,10 +32,15 @@ class BrowserCDPAdapter(BasePlatformAdapter):
             self.browser = self.playwright.chromium.connect_over_cdp(f"http://localhost:{self.cdp_port}")
             default_context = self.browser.contexts[0]
             
-            # Ищем целевую вкладку с дейтингом
-            target_keywords = ["tinder.com", "badoo.com", "bumble.com", "pure.app", "web.telegram.org", "feeld.co", "hinge.co"]
+            # Ищем целевую вкладку с дейтингом (исключая справку и внешние домены)
+            target_keywords = ["tinder.com/app", "tinder.com", "badoo.com/encounters", "badoo.com", "bumble.com/app", "pure.app", "web.telegram.org", "boo.world", "okcupid.com"]
+            exclude_keywords = ["help.", "support.", "blog.", "policy", "privacy", "terms", "feedback"]
+
             for p in default_context.pages:
-                if any(k in p.url.lower() for k in target_keywords):
+                url = p.url.lower()
+                if any(ex in url for ex in exclude_keywords):
+                    continue
+                if any(k in url for k in target_keywords):
                     self.page = p
                     break
 
@@ -81,6 +86,31 @@ class BrowserCDPAdapter(BasePlatformAdapter):
             photo_paths=[str(screenshot_path)] if screenshot_path.exists() else [],
             raw_text=page_text
         )
+
+    def is_limit_reached(self) -> bool:
+        """Проверяет, не вылезло ли всплывающее окно об исчерпании суточного лимита лайков"""
+        if not self.page:
+            return False
+        try:
+            text = self.page.evaluate("() => document.body.innerText.toLowerCase()")
+            limit_markers = [
+                "out of likes",
+                "get tinder plus",
+                "get tinder gold",
+                "get tinder platinum",
+                "закончились лайки",
+                "лимит лайков",
+                "у вас закончились лайки",
+                "лайки закінчилися",
+                "ви вичерпали ліміт",
+                "get unlimited likes"
+            ]
+            for m in limit_markers:
+                if m in text:
+                    return True
+        except Exception:
+            pass
+        return False
 
     def like(self, profile: ProfileData):
         """Лайк / свайп вправо с естественной паузой"""

@@ -115,6 +115,12 @@ def run_scan(platform: str = "tg_leomatchbot", limit: int = 5):
     adapter.connect()
 
     for i in range(1, limit + 1):
+        # Проверяем, не исчерпан ли суточный лимит
+        if hasattr(adapter, "is_limit_reached") and adapter.is_limit_reached():
+            print("\n🛑 ВНИМАНИЕ: Tinder показал экран исчерпания суточного лимита бесплатных лайков!")
+            print("Бот автоматически останавливает работу до обновления лимита.")
+            break
+
         print(f"\n--- Анкета #{i}/{limit} ---")
         profile = adapter.fetch_next_profile()
         eval_res = scorer.evaluate(profile)
@@ -135,6 +141,11 @@ def run_scan(platform: str = "tg_leomatchbot", limit: int = 5):
         else:
             print(f"Пропуск: {eval_res.reason}")
             adapter.dislike(profile)
+
+        # Проверка лимита после лайка
+        if hasattr(adapter, "is_limit_reached") and adapter.is_limit_reached():
+            print("\n🛑 Tinder сообщил: бесплатные лайки на сегодня закончились!")
+            break
 
         time.sleep(2.0)
 
