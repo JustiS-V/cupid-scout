@@ -10,8 +10,16 @@ function detectPlatform() {
   if (host.includes("bumble.com")) return "Bumble";
   if (host.includes("pure.app")) return "Pure";
   if (host.includes("telegram.org")) return "Telegram";
+  if (host.includes("instagram.com")) return "Instagram";
+  if (host.includes("boo.world")) return "Boo";
+  if (host.includes("okcupid.com")) return "OKCupid";
   if (host.includes("feeld.co")) return "Feeld";
+  if (host.includes("happn.com")) return "Happn";
+  if (host.includes("facebook.com")) return "FB Dating";
+  if (host.includes("kismia.com")) return "Kismia";
   if (host.includes("hinge.co")) return "Hinge";
+  if (host.includes("taimi.com")) return "Taimi";
+  if (host.includes("coffeemeetsbagel.com")) return "CMB";
   return "Dating";
 }
 

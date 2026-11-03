@@ -7,7 +7,7 @@
       "url": "https://tinder.com/app/recs",
       "region": "Украина / Мир",
       "priority": "P0 (Массовая база)",
-      "casual_suitability": "Высокая (нужен VLM-фильтр от инста-байтеров)",
+      "casual_suitability": "Высокая (нужен VLM-фильтр)",
       "ban_risk": "Низкий через Dolphin Anty / Расширение",
       "tech_stack": "Playwright CDP / Chrome Extension",
       "status": "active_connected",
@@ -66,6 +66,45 @@
       "shortcuts": "Кнопки бота ❤️ / 👎"
     },
     {
+      "id": "instagram_locations",
+      "name": "Instagram Locations Scraper",
+      "type": "social_web",
+      "url": "https://instagram.com",
+      "region": "Киев, Одесса, Львов (Модные заведения)",
+      "priority": "P0 (Самые красивые девушки)",
+      "casual_suitability": "Очень высокая при метком оупенере",
+      "ban_risk": "Низкий",
+      "tech_stack": "Chrome Extension / Playwright",
+      "status": "active_connected",
+      "shortcuts": "Просмотр свежих отметок по геоточкам"
+    },
+    {
+      "id": "boo_web",
+      "name": "Boo World Web",
+      "type": "web_spa",
+      "url": "https://boo.world/match",
+      "region": "Украина (Студентки, MBTI, альт-культура)",
+      "priority": "P1 (Тренд года)",
+      "casual_suitability": "Высокая",
+      "ban_risk": "Низкий",
+      "tech_stack": "Chrome Extension / Playwright",
+      "status": "active_connected",
+      "shortcuts": "ArrowRight / Left"
+    },
+    {
+      "id": "okcupid_web",
+      "name": "OKCupid Web",
+      "type": "web_spa",
+      "url": "https://okcupid.com",
+      "region": "Украина / Мир",
+      "priority": "P1 (Подробные секс-тесты)",
+      "casual_suitability": "Очень высокая (прямо пишут про FWB)",
+      "ban_risk": "Низкий",
+      "tech_stack": "Chrome Extension / Playwright",
+      "status": "active_connected",
+      "shortcuts": "ArrowRight / Left"
+    },
+    {
       "id": "feeld_web",
       "name": "Feeld Web",
       "type": "web_spa",
@@ -79,6 +118,45 @@
       "shortcuts": "ArrowRight / Left"
     },
     {
+      "id": "happn_web",
+      "name": "Happn Web",
+      "type": "web_spa",
+      "url": "https://happn.com",
+      "region": "Украина (Пересечения на улицах)",
+      "priority": "P2",
+      "casual_suitability": "Средняя",
+      "ban_risk": "Низкий",
+      "tech_stack": "Chrome Extension",
+      "status": "active_connected",
+      "shortcuts": "Like / Cross"
+    },
+    {
+      "id": "facebook_dating",
+      "name": "Facebook Dating",
+      "type": "web_app",
+      "url": "https://facebook.com/dating",
+      "region": "Украина (Огромная база, без лимитов)",
+      "priority": "P2",
+      "casual_suitability": "Средняя",
+      "ban_risk": "Минимальный",
+      "tech_stack": "Chrome Extension",
+      "status": "active_connected",
+      "shortcuts": "Like / Pass"
+    },
+    {
+      "id": "kismia_web",
+      "name": "Kismia Web",
+      "type": "web_portal",
+      "url": "https://kismia.com",
+      "region": "Украина (Раскрепощенные 23-35 лет)",
+      "priority": "P2",
+      "casual_suitability": "Высокая",
+      "ban_risk": "Низкий",
+      "tech_stack": "Chrome Extension",
+      "status": "active_connected",
+      "shortcuts": "Like / Skip"
+    },
+    {
       "id": "hinge_web",
       "name": "Hinge Web",
       "type": "web_spa",
@@ -90,6 +168,32 @@
       "tech_stack": "Chrome Extension / Playwright",
       "status": "active_connected",
       "shortcuts": "Heart / Skip"
+    },
+    {
+      "id": "taimi_web",
+      "name": "Taimi Web",
+      "type": "web_spa",
+      "url": "https://taimi.com",
+      "region": "Квир / Бисексуалки / Свободный вайб",
+      "priority": "P2",
+      "casual_suitability": "Высокая",
+      "ban_risk": "Низкий",
+      "tech_stack": "Chrome Extension",
+      "status": "active_connected",
+      "shortcuts": "ArrowRight / Left"
+    },
+    {
+      "id": "coffee_meets_bagel",
+      "name": "Coffee Meets Bagel",
+      "type": "web_spa",
+      "url": "https://coffeemeetsbagel.com",
+      "region": "Карьеристки / Качественный отбор",
+      "priority": "P2",
+      "casual_suitability": "Средняя",
+      "ban_risk": "Низкий",
+      "tech_stack": "Chrome Extension",
+      "status": "active_connected",
+      "shortcuts": "Like / Pass"
     }
   ]
 }

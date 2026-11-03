@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Cupid Scout - AI Dating Assistant",
-  "version": "1.2.0",
-  "description": "Автономный ассистент для дейтинг-платформ (Tinder, Badoo, Bumble, Pure, Telegram, Feeld): анализ внешности, вайба и автосвайп через локальный Qwen / LM Studio или Gemini",
+  "version": "1.3.0",
+  "description": "Автономный ассистент для дейтинг-платформ (Tinder, Badoo, Bumble, Pure, Telegram, Boo, OKCupid, Instagram): анализ внешности, вайба и автосвайп через локальный Qwen / LM Studio или Gemini",
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
@@ -28,8 +28,16 @@
     "*://*.bumble.com/*",
     "*://*.pure.app/*",
     "*://web.telegram.org/*",
+    "*://*.instagram.com/*",
+    "*://*.boo.world/*",
+    "*://*.okcupid.com/*",
     "*://*.feeld.co/*",
+    "*://*.happn.com/*",
+    "*://*.facebook.com/*",
+    "*://*.kismia.com/*",
     "*://*.hinge.co/*",
+    "*://*.taimi.com/*",
+    "*://*.coffeemeetsbagel.com/*",
     "http://127.0.0.1:1234/*",
     "http://localhost:1234/*",
     "http://100.108.136.100:1234/*",
@@ -47,8 +55,16 @@
         "*://*.bumble.com/*",
         "*://*.pure.app/*",
         "*://web.telegram.org/*",
+        "*://*.instagram.com/*",
+        "*://*.boo.world/*",
+        "*://*.okcupid.com/*",
         "*://*.feeld.co/*",
-        "*://*.hinge.co/*"
+        "*://*.happn.com/*",
+        "*://*.facebook.com/*",
+        "*://*.kismia.com/*",
+        "*://*.hinge.co/*",
+        "*://*.taimi.com/*",
+        "*://*.coffeemeetsbagel.com/*"
       ],
       "js": ["content.js"],
       "run_at": "document_idle"
