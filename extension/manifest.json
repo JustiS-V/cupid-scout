@@ -1,0 +1,53 @@
+{
+  "manifest_version": 3,
+  "name": "Cupid Scout - AI Dating Assistant",
+  "version": "1.0.0",
+  "description": "Автономный ассистент для дейтинг-платформ: анализ внешности, вайба и автосвайп через локальный Qwen / LM Studio или Gemini",
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "permissions": [
+    "activeTab",
+    "storage",
+    "tabs",
+    "scripting"
+  ],
+  "host_permissions": [
+    "*://*.tinder.com/*",
+    "*://*.bumble.com/*",
+    "*://*.mamba.ru/*",
+    "*://*.badoo.com/*",
+    "*://*.pure.app/*",
+    "http://127.0.0.1:1234/*",
+    "http://localhost:1234/*",
+    "http://100.108.136.100:1234/*",
+    "https://api.openai.com/*",
+    "https://generativelanguage.googleapis.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.tinder.com/*",
+        "*://*.bumble.com/*",
+        "*://*.mamba.ru/*",
+        "*://*.badoo.com/*",
+        "*://*.pure.app/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

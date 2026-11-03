@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Cupid Scout Settings</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="header">
+    <div class="logo">🏹 Cupid Scout AI</div>
+    <div class="badge">Local & Private</div>
+  </div>
+
+  <div class="section">
+    <label>Провайдер нейросети:</label>
+    <select id="provider">
+      <option value="worker_lms">12-Core Windows Worker (SSH Tunnel)</option>
+      <option value="local_lms">LM Studio (Локально на этом Mac)</option>
+      <option value="gemini">Google Gemini 2.5 Flash</option>
+      <option value="openai">OpenAI ChatGPT (GPT-4o)</option>
+    </select>
+  </div>
+
+  <div class="section" id="lms-config">
+    <label>LM Studio URL:</label>
+    <input type="text" id="lmsUrl" value="http://127.0.0.1:1234/v1">
+    
+    <label>Имя модели:</label>
+    <input type="text" id="lmsModel" value="media-vision">
+  </div>
+
+  <div class="section" id="gemini-config" style="display: none;">
+    <label>Gemini API Key:</label>
+    <input type="password" id="geminiKey" placeholder="AIzaSy...">
+  </div>
+
+  <div class="section" id="openai-config" style="display: none;">
+    <label>OpenAI API Key:</label>
+    <input type="password" id="openaiKey" placeholder="sk-proj-...">
+  </div>
+
+  <div class="section">
+    <div class="slider-row">
+      <span>Мин. привлекательность:</span>
+      <b id="attr-val">7.0</b>
+    </div>
+    <input type="range" id="minAttractiveness" min="1" max="10" step="0.5" value="7.0">
+
+    <div class="slider-row" style="margin-top: 8px;">
+      <span>Мин. FWB / Casual вайб:</span>
+      <b id="intent-val">6.0</b>
+    </div>
+    <input type="range" id="minIntent" min="1" max="10" step="0.5" value="6.0">
+  </div>
+
+  <button id="saveBtn">💾 Сохранить настройки</button>
+  <div id="statusMsg"></div>
+
+  <div class="footer">
+    Откройте Tinder, Bumble или Mamba в этом браузере. Виджет появится на странице справа вверху.
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
