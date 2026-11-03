@@ -58,8 +58,16 @@ def send_chat_message(match_id: str, message_text: str, auto_submit: bool = Fals
 
         time.sleep(2.0)
 
+        # Ждем загрузки поля ввода
+        try:
+            tinder_page.wait_for_selector('textarea, [role="textbox"]', timeout=8000)
+        except Exception:
+            pass
+
         # Находим поле ввода
         input_selectors = [
+            'textarea[placeholder*="повідомлення"]',
+            'textarea[placeholder*="message"]',
             'textarea',
             'div[contenteditable="true"]',
             '[role="textbox"]',
