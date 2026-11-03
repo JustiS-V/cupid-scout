@@ -212,10 +212,36 @@ def run_chat():
     generator = ChatGenerator()
     generator.process_all_matches()
 
+def show_analytics():
+    """Показать аналитику поведения девушек в чатах"""
+    from core.analytics import BehavioralAnalyticsManager, DB_PATH, ANALYTICS_REPORT_MD
+    import sqlite3
+    mgr = BehavioralAnalyticsManager()
+    mgr.generate_full_report()
+    
+    with sqlite3.connect(DB_PATH) as conn:
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        cursor.execute("SELECT name, age, conversion_stage, her_avg_response_time_min, investment_ratio, questions_asked_by_her, behavior_archetype FROM behavioral_profiles ORDER BY her_messages_count DESC")
+        rows = cursor.fetchall()
+
+    print("\n" + "="*105)
+    print("📊 ПОВЕДЕНЧЕСКАЯ АНАЛИТИКА ДИАЛОГОВ (CUPID SCOUT BEHAVIORAL INTEL):")
+    print("="*105)
+    print(f"{'Кандидатка':<18} | {'Статус':<14} | {'Время ответа':<14} | {'Вклад (IR)':<12} | {'Вопросы':<8} | {'Поведенческий Архетип'}")
+    print("="*105)
+    for r in rows:
+        name_age = f"{r['name']}, {r['age'] or '?'}"
+        rt = f"{r['her_avg_response_time_min']} мин" if r['her_avg_response_time_min'] is not None else "ожидание"
+        ir = f"{r['investment_ratio']:.2f}x"
+        print(f"{name_age:<18} | {r['conversion_stage']:<14} | {rt:<14} | {ir:<12} | {r['questions_asked_by_her']:<8} | {r['behavior_archetype']}")
+    print("="*105)
+    print(f"\n📄 Полный аналитический отчет сформирован: {ANALYTICS_REPORT_MD}\n")
+
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description="Dating AI Agent")
-    parser.add_argument("command", choices=["platforms", "test-eval", "scan", "stats", "history", "matches", "chat"], nargs="?", default="platforms")
+    parser.add_argument("command", choices=["platforms", "test-eval", "scan", "stats", "history", "matches", "chat", "analytics"], nargs="?", default="platforms")
     parser.add_argument("--platform", default="tg_leomatchbot", help="ID платформы")
     parser.add_argument("--limit", type=int, default=5, help="Количество анкет")
     args = parser.parse_args()
@@ -234,3 +260,5 @@ if __name__ == "__main__":
         show_matches()
     elif args.command == "chat":
         run_chat()
+    elif args.command == "analytics":
+        show_analytics()
