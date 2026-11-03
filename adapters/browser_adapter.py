@@ -32,8 +32,8 @@ class BrowserCDPAdapter(BasePlatformAdapter):
             self.browser = self.playwright.chromium.connect_over_cdp(f"http://localhost:{self.cdp_port}")
             default_context = self.browser.contexts[0]
             
-            # Ищем вкладку с дейтингом
-            target_keywords = ["tinder.com", "bumble.com", "mamba.ru", "badoo.com", "pure.app"]
+            # Ищем целевую вкладку с дейтингом
+            target_keywords = ["tinder.com", "badoo.com", "bumble.com", "pure.app", "web.telegram.org", "feeld.co", "hinge.co"]
             for p in default_context.pages:
                 if any(k in p.url.lower() for k in target_keywords):
                     self.page = p
@@ -87,8 +87,20 @@ class BrowserCDPAdapter(BasePlatformAdapter):
         print(f"[BrowserAdapter] 💚 Свайп вправо (Лайк)...")
         if self.page:
             try:
-                # В Tinder / Bumble стрелка вправо или клавиша '1' / 'L'
-                self.page.keyboard.press("ArrowRight")
+                url = self.page.url.lower()
+                if "telegram.org" in url:
+                    # Попытка кликнуть кнопку с сердечком или цифрой 1 в Telegram Web
+                    self.page.evaluate("""() => {
+                        const btns = Array.from(document.querySelectorAll('button, .reply-markup-button, .btn-primary'));
+                        const b = btns.find(x => x.innerText.includes('❤️') || x.innerText.includes('👍') || x.innerText.trim() === '1');
+                        if (b) b.click();
+                    }""")
+                elif "badoo.com" in url:
+                    btn = self.page.query_selector('[data-choice="yes"], .encounters-controls__button--like')
+                    if btn: btn.click()
+                    else: self.page.keyboard.press("ArrowRight")
+                else:
+                    self.page.keyboard.press("ArrowRight")
             except Exception as e:
                 print(f"[BrowserAdapter] Ошибка нажатия Like: {e}")
         time.sleep(2.5)
@@ -98,7 +110,19 @@ class BrowserCDPAdapter(BasePlatformAdapter):
         print(f"[BrowserAdapter] ❌ Свайп влево (Пропуск)...")
         if self.page:
             try:
-                self.page.keyboard.press("ArrowLeft")
+                url = self.page.url.lower()
+                if "telegram.org" in url:
+                    self.page.evaluate("""() => {
+                        const btns = Array.from(document.querySelectorAll('button, .reply-markup-button, .btn-primary'));
+                        const b = btns.find(x => x.innerText.includes('👎') || x.innerText.includes('❌') || x.innerText.trim() === '2');
+                        if (b) b.click();
+                    }""")
+                elif "badoo.com" in url:
+                    btn = self.page.query_selector('[data-choice="no"], .encounters-controls__button--dislike')
+                    if btn: btn.click()
+                    else: self.page.keyboard.press("ArrowLeft")
+                else:
+                    self.page.keyboard.press("ArrowLeft")
             except Exception as e:
                 print(f"[BrowserAdapter] Ошибка нажатия Pass: {e}")
         time.sleep(1.8)

@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Cupid Scout - AI Dating Assistant",
-  "version": "1.1.0",
-  "description": "Автономный ассистент для дейтинг-платформ: анализ внешности, вайба и автосвайп через локальный Qwen / LM Studio или Gemini",
+  "version": "1.2.0",
+  "description": "Автономный ассистент для дейтинг-платформ (Tinder, Badoo, Bumble, Pure, Telegram, Feeld): анализ внешности, вайба и автосвайп через локальный Qwen / LM Studio или Gemini",
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
@@ -24,10 +24,12 @@
   ],
   "host_permissions": [
     "*://*.tinder.com/*",
-    "*://*.bumble.com/*",
-    "*://*.mamba.ru/*",
     "*://*.badoo.com/*",
+    "*://*.bumble.com/*",
     "*://*.pure.app/*",
+    "*://web.telegram.org/*",
+    "*://*.feeld.co/*",
+    "*://*.hinge.co/*",
     "http://127.0.0.1:1234/*",
     "http://localhost:1234/*",
     "http://100.108.136.100:1234/*",
@@ -41,10 +43,12 @@
     {
       "matches": [
         "*://*.tinder.com/*",
-        "*://*.bumble.com/*",
-        "*://*.mamba.ru/*",
         "*://*.badoo.com/*",
-        "*://*.pure.app/*"
+        "*://*.bumble.com/*",
+        "*://*.pure.app/*",
+        "*://web.telegram.org/*",
+        "*://*.feeld.co/*",
+        "*://*.hinge.co/*"
       ],
       "js": ["content.js"],
       "run_at": "document_idle"

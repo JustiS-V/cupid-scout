@@ -3,9 +3,23 @@
 let isRunning = false;
 let hudElement = null;
 
+function detectPlatform() {
+  const host = window.location.hostname.toLowerCase();
+  if (host.includes("tinder.com")) return "Tinder";
+  if (host.includes("badoo.com")) return "Badoo";
+  if (host.includes("bumble.com")) return "Bumble";
+  if (host.includes("pure.app")) return "Pure";
+  if (host.includes("telegram.org")) return "Telegram";
+  if (host.includes("feeld.co")) return "Feeld";
+  if (host.includes("hinge.co")) return "Hinge";
+  return "Dating";
+}
+
 // Initialize HUD on page
 function initHUD() {
   if (hudElement) return;
+
+  const currentPlatform = detectPlatform();
 
   hudElement = document.createElement("div");
   hudElement.id = "cupid-scout-hud";
@@ -28,6 +42,7 @@ function initHUD() {
     ">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
         <span style="font-weight: 700; color: #ff4b6e; font-size: 14px;">🏹 Cupid Scout AI <a href="https://github.com/JustiS-V/cupid-scout#sponsor" target="_blank" style="text-decoration:none; font-size: 13px;" title="Поддержать автора">💖</a></span>
+        <span style="font-size: 10px; background: rgba(255,75,110,0.2); color: #ff4b6e; padding: 2px 6px; border-radius: 6px;">${currentPlatform}</span>
         <span id="cs-status-badge" style="font-size: 11px; background: #333; padding: 2px 8px; border-radius: 10px;">Idle</span>
       </div>
       
@@ -100,10 +115,38 @@ function toggleScout() {
   }
 }
 
-// Emulate Keyboard Swipe
+// Emulate Smart Swipe for Tinder, Badoo, Bumble, Pure, Telegram, Feeld
 function swipe(direction) {
-  const key = direction === "right" ? "ArrowRight" : "ArrowLeft";
-  const keyCode = direction === "right" ? 39 : 37;
+  const platform = detectPlatform();
+  const isRight = direction === "right";
+
+  if (platform === "Telegram") {
+    // Поиск кнопок в Telegram Web (боты ДайВинчик и аналоги)
+    const buttons = Array.from(document.querySelectorAll("button, .reply-markup-button, .btn-primary, .InlineButton"));
+    const likeBtn = buttons.find(b => b.innerText.includes("❤️") || b.innerText.includes("👍") || b.innerText.trim() === "1");
+    const passBtn = buttons.find(b => b.innerText.includes("👎") || b.innerText.includes("❌") || b.innerText.trim() === "2");
+    if (isRight && likeBtn) { likeBtn.click(); return; }
+    if (!isRight && passBtn) { passBtn.click(); return; }
+  }
+
+  if (platform === "Badoo") {
+    // Кнопки лайка и дизлайка на Badoo
+    const likeBtn = document.querySelector('[data-choice="yes"], .encounters-controls__button--like, [aria-label*="like" i]');
+    const passBtn = document.querySelector('[data-choice="no"], .encounters-controls__button--dislike, [aria-label*="dislike" i]');
+    if (isRight && likeBtn) { likeBtn.click(); return; }
+    if (!isRight && passBtn) { passBtn.click(); return; }
+  }
+
+  if (platform === "Pure") {
+    const likeBtn = document.querySelector('[data-testid="like-button"], button.like, [aria-label*="like" i]');
+    const passBtn = document.querySelector('[data-testid="skip-button"], button.skip, [aria-label*="skip" i]');
+    if (isRight && likeBtn) { likeBtn.click(); return; }
+    if (!isRight && passBtn) { passBtn.click(); return; }
+  }
+
+  // Универсальный фолбэк через стрелки клавиатуры (Tinder, Bumble, Feeld, Badoo)
+  const key = isRight ? "ArrowRight" : "ArrowLeft";
+  const keyCode = isRight ? 39 : 37;
 
   window.dispatchEvent(new KeyboardEvent("keydown", { key, keyCode, code: key, bubbles: true }));
   window.dispatchEvent(new KeyboardEvent("keyup", { key, keyCode, code: key, bubbles: true }));
