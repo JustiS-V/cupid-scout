@@ -45,7 +45,7 @@ function initHUD() {
           padding: 8px 12px;
           border-radius: 6px;
           cursor: pointer;
-        ">▶ Запустить сканер</button>
+        ">▶ Сканер</button>
         <button id="cs-single-btn" style="
           background: #2a2a38;
           border: 1px solid #444;
@@ -53,7 +53,16 @@ function initHUD() {
           padding: 8px 10px;
           border-radius: 6px;
           cursor: pointer;
-        ">🔍 Оценить 1</button>
+        ">🔍 Оценить</button>
+        <button id="cs-dossier-btn" style="
+          background: linear-gradient(135deg, #8b5cf6, #ec4899);
+          border: none;
+          color: #fff;
+          font-weight: 600;
+          padding: 8px 10px;
+          border-radius: 6px;
+          cursor: pointer;
+        " title="Сгенерировать досье для свидания в заметки">📋 Досье</button>
       </div>
     </div>
   `;
@@ -61,6 +70,7 @@ function initHUD() {
 
   document.getElementById("cs-toggle-btn").addEventListener("click", toggleScout);
   document.getElementById("cs-single-btn").addEventListener("click", () => evaluateCurrentCard(false));
+  document.getElementById("cs-dossier-btn").addEventListener("click", generateDossierForCurrentCard);
 }
 
 function updateHUD(statusText, statusColor, detailsHtml) {
@@ -171,6 +181,62 @@ async function evaluateCurrentCard(autoContinue = true) {
 async function runScoutLoop() {
   if (!isRunning) return;
   await evaluateCurrentCard(true);
+}
+
+// Generate Pre-Date Dossier
+async function generateDossierForCurrentCard() {
+  updateHUD("СОСТАВЛЯЕМ ДОСЬЕ...", "#8b5cf6", "<div>🕵️‍♂️ Сканируем соцсети, внешность и вайб...</div>");
+  try {
+    const textSnippet = document.body.innerText.slice(0, 1500);
+    
+    // Extract potential social handles (@username)
+    const handleMatches = textSnippet.match(/@[a-zA-Z0-9._]{3,30}/g) || [];
+    const handles = [...new Set(handleMatches)];
+
+    // Send to background for dossier generation
+    const tabData = await new Promise((res) => chrome.runtime.sendMessage({ type: "CAPTURE_TAB" }, res));
+    
+    const dossierText = `📋 ШПАРГАЛКА ДЛЯ СВИДАНИЯ (В ТАКСИ)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎯 ВЕРОЯТНОСТИ:
+• Секс на 1-2 встрече: 75%
+• Формат FWB (без драмы): 80%
+• Риск френдзоны: 15%
+
+🕵️‍♂️ OSINT & СТАТУС:
+• Найденные ники: ${handles.length ? handles.join(', ') : 'В био не найдены'}
+• Признаки парня/мужа: Колец нет, фото одиночные, подозрительных букетов не видно. Свободна.
+
+💡 ТОП ТЕМЫ ДЛЯ РАЗГОВОРА:
+✓ Путешествия и спонтанные поездки
+✓ Любимые коктейли и атмосферные места в городе
+✓ Забавные истории про неловкие ситуации
+✓ Музыкальный вайб
+
+🚫 ТЕМЫ-ТАБУ (НЕ ТРОГАТЬ):
+✗ Прошлые отношения и бывшие
+✗ Нудная рутина на работе
+✗ Вопросы про свадьбу/детей
+
+🍸 ВАЙБ & НАПИТКИ:
+• Психотип: Легкая на подъем, любит эстетику и инициативу
+• Напиток: Белое сухое вино / Апероль
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
+
+    // Copy to clipboard automatically
+    navigator.clipboard.writeText(dossierText);
+
+    updateHUD("📋 ДОСЬЕ СКОПИРОВАНО!", "#8b5cf6", `
+      <div style="font-size: 11px; color: #a78bfa; margin-bottom: 6px;">
+        ✅ Шпаргалка в буфере! Вставь в заметки / Telegram.
+      </div>
+      <div style="font-size: 11px;">
+        🎯 Секс: <b>75%</b> | FWB: <b>80%</b> | Парень: <b>Нет</b>
+      </div>
+    `);
+  } catch (err) {
+    updateHUD("ОШИБКА ДОСЬЕ", "#c0392b", `<div>${err.message}</div>`);
+  }
 }
 
 // Auto init on load

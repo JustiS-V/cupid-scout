@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Cupid Scout - AI Dating Assistant",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Автономный ассистент для дейтинг-платформ: анализ внешности, вайба и автосвайп через локальный Qwen / LM Studio или Gemini",
   "action": {
     "default_popup": "popup.html",
