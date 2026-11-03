@@ -27,7 +27,7 @@ function initHUD() {
       backdrop-filter: blur(10px);
     ">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-        <span style="font-weight: 700; color: #ff4b6e; font-size: 14px;">🏹 Cupid Scout AI</span>
+        <span style="font-weight: 700; color: #ff4b6e; font-size: 14px;">🏹 Cupid Scout AI <a href="https://github.com/JustiS-V/cupid-scout#sponsor" target="_blank" style="text-decoration:none; font-size: 13px;" title="Поддержать автора">💖</a></span>
         <span id="cs-status-badge" style="font-size: 11px; background: #333; padding: 2px 8px; border-radius: 10px;">Idle</span>
       </div>
       

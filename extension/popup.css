@@ -88,6 +88,26 @@ button:hover {
   background: #e03b5c;
 }
 
+.sponsor-btn {
+  display: block;
+  text-align: center;
+  background: linear-gradient(135deg, #ff4b6e 0%, #a855f7 100%);
+  color: white;
+  text-decoration: none;
+  padding: 8px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 12px;
+  margin-top: 8px;
+  box-shadow: 0 4px 12px rgba(255, 75, 110, 0.25);
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.sponsor-btn:hover {
+  opacity: 0.95;
+  transform: translateY(-1px);
+}
+
 #statusMsg {
   margin-top: 8px;
   font-size: 11px;

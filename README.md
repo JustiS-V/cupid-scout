@@ -1,6 +1,10 @@
-# 🏹 Dating AI Agent (Cupid Scout)
+# 🏹 Cupid Scout AI
 
-> Автономный агент для автоматического сбора, анализа внешности через Multimodal LLM (Gemini Flash Vision / GPT-4o) и отбора анкет для ONS/FWB/Casual знакомств.
+> Автономный агент и Chromium-расширение для отбора анкет на дейтинг-платформах (Tinder, Bumble, Mamba, Badoo) на базе локального Qwen (LM Studio) / Gemini.
+
+[![GitHub release](https://img.shields.io/github/v/release/JustiS-V/cupid-scout?color=ff4b6e&style=flat-square)](https://github.com/JustiS-V/cupid-scout/releases)
+[![Sponsor](https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?style=flat-square)](https://github.com/JustiS-V/cupid-scout#sponsor)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
 
 ---
 
@@ -70,3 +74,14 @@ python main.py scan --platform tinder_web --limit 10
 ```
 
 Войдите в свой аккаунт руками, а скрипт подключится к уже открытой сессии через порт `9222` и будет автоматически анализировать профили и свайпать!
+
+---
+
+## 💖 Поддержать автора / Sponsor
+
+Если проект сэкономил вам сотни часов рутинного свайпинга или помог найти вторую половинку / приятную встречу — поддержите разработку:
+
+- **GitHub Sponsors:** [github.com/sponsors/JustiS-V](https://github.com/sponsors/JustiS-V)
+- **Buy Me a Coffee:** [buymeacoffee.com/justis_v](https://www.buymeacoffee.com/justis_v)
+- **Ko-fi:** [ko-fi.com/justis_v](https://ko-fi.com/justis_v)
+- **Crypto (USDT TRC20 / TON):** Принимаются любые донаты на развитие локальных VLM-алгоритмов!
