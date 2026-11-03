@@ -185,10 +185,37 @@ def show_history():
         print(f"{r[0]:<18} | {name_age:<15} | {scores:<12} | {act:<10} | {reason}")
     print("="*90 + "\n")
 
+def show_matches():
+    """Показать список взаимных мэтчей из базы"""
+    import sqlite3
+    from core.storage import DB_PATH
+    with sqlite3.connect(DB_PATH) as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT name, age, looking_for, bio, profile_url FROM mutual_matches ORDER BY updated_at DESC")
+        rows = cursor.fetchall()
+        
+    print("\n" + "="*95)
+    print("🔥 ВЗАИМНЫЕ МЭТЧИ (TINDER / DATING):")
+    print("="*95)
+    print(f"{'Имя, Возраст':<18} | {'Что ищет':<25} | {'Био анкеты':<45}")
+    print("="*95)
+    for r in rows:
+        name_age = f"{r[0] or 'Девушка'}, {r[1] or '?'}"
+        looking = (r[2][:23] + "..") if r[2] and len(r[2]) > 23 else (r[2] or "Не указано")
+        bio = (r[3][:42] + "..") if r[3] and len(r[3]) > 42 else (r[3] or "Пусто")
+        print(f"{name_age:<18} | {looking:<25} | {bio:<45}")
+    print("="*95 + "\n")
+
+def run_chat():
+    """Генерация и просмотр оупенеров/сообщений для мэтчей"""
+    from core.chat_generator import ChatGenerator
+    generator = ChatGenerator()
+    generator.process_all_matches()
+
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description="Dating AI Agent")
-    parser.add_argument("command", choices=["platforms", "test-eval", "scan", "stats", "history"], nargs="?", default="platforms")
+    parser.add_argument("command", choices=["platforms", "test-eval", "scan", "stats", "history", "matches", "chat"], nargs="?", default="platforms")
     parser.add_argument("--platform", default="tg_leomatchbot", help="ID платформы")
     parser.add_argument("--limit", type=int, default=5, help="Количество анкет")
     args = parser.parse_args()
@@ -203,3 +230,7 @@ if __name__ == "__main__":
         show_stats()
     elif args.command == "history":
         show_history()
+    elif args.command == "matches":
+        show_matches()
+    elif args.command == "chat":
+        run_chat()
