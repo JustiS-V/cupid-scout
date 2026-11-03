@@ -1,0 +1,87 @@
+{
+  "platforms": [
+    {
+      "id": "tg_leomatchbot",
+      "name": "ДайВинчик (Telegram)",
+      "type": "telegram_bot",
+      "handle": "@leomatchbot",
+      "priority": "P0 (Самый быстрый старт)",
+      "casual_suitability": "Высокая (огромная база, быстрый отклик)",
+      "ban_risk": "Низкий (через userbot Telethon)",
+      "tech_stack": "Telethon / Pyrogram",
+      "status": "ready_for_automation",
+      "notes": "Легко забирать фото и текст сообщением. Не требует антидетект-браузера."
+    },
+    {
+      "id": "pure_app",
+      "name": "Pure (Hookup & FWB App)",
+      "type": "mobile_app",
+      "priority": "P0 (Лучшая целевая аудитория)",
+      "casual_suitability": "Максимальная (100% заточен под ONS/FWB/секс-позитив)",
+      "ban_risk": "Средний (анонимные чаты, строгие тайм-ауты)",
+      "tech_stack": "Android Emulator (Appium / UIAutomator2) / Frida MITM API",
+      "status": "requires_emulator",
+      "notes": "Топ-конверсия под спор, но требует эмулятор Android или сниффинг токенов."
+    },
+    {
+      "id": "tinder_web",
+      "name": "Tinder Web",
+      "type": "web_spa",
+      "url": "https://tinder.com",
+      "priority": "P1",
+      "casual_suitability": "Средняя-высокая (много профилей, нужен жесткий VLM-фильтр)",
+      "ban_risk": "Высокий (Cloudflare, DeviceCheck)",
+      "tech_stack": "Playwright CDP (подключение к уже открытому Chrome)",
+      "status": "ready_for_automation",
+      "notes": "Подключаться через Chrome --remote-debugging-port=9222 чтобы обойти капчи."
+    },
+    {
+      "id": "bumble_web",
+      "name": "Bumble Web",
+      "type": "web_spa",
+      "url": "https://bumble.com",
+      "priority": "P1",
+      "casual_suitability": "Средняя (девушки пишут первыми, требуется триггер-ответ)",
+      "ban_risk": "Средний-высокий",
+      "tech_stack": "Playwright CDP",
+      "status": "ready_for_automation",
+      "notes": "Хорошо подходит для сбора профилей и автоматических оупенеров при мэтче."
+    },
+    {
+      "id": "mamba_web",
+      "name": "Mamba / Wamba Web",
+      "type": "web_portal",
+      "url": "https://www.mamba.ru",
+      "priority": "P2",
+      "casual_suitability": "Высокая для СНГ (много прямого поиска без обязательств)",
+      "ban_risk": "Низкий-средний",
+      "tech_stack": "Playwright / requests session",
+      "status": "ready_for_automation",
+      "notes": "Простой DOM, легко парсить фото и анкеты."
+    },
+    {
+      "id": "badoo_web",
+      "name": "Badoo Web",
+      "type": "web_spa",
+      "url": "https://badoo.com",
+      "priority": "P2",
+      "casual_suitability": "Средняя",
+      "ban_risk": "Средний",
+      "tech_stack": "Playwright CDP",
+      "status": "ready_for_automation",
+      "notes": "Большая база по геолокации."
+    },
+    {
+      "id": "vk_dating",
+      "name": "VK Знакомства (Мини-апп)",
+      "type": "vk_miniapp",
+      "url": "https://vk.com/dating",
+      "priority": "P2",
+      "casual_suitability": "Средняя",
+      "ban_risk": "Низкий",
+      "tech_stack": "VK API / Playwright",
+      "status": "research",
+      "notes": "Полезно тем, что видны настоящие профили VK и общие друзья."
+    }
+  ]
+}
