@@ -1,9 +1,16 @@
 import os
+import sys
 import time
 import json
 import sqlite3
 import datetime
 from pathlib import Path
+from typing import List, Dict, Any, Optional
+
+BASE_DIR = Path("/Users/val9/Desktop/Process/dating-ai-agent")
+if str(BASE_DIR) not in sys.path:
+    sys.path.insert(0, str(BASE_DIR))
+
 from playwright.sync_api import sync_playwright
 from core.analytics import BehavioralAnalyticsManager
 
