@@ -1,0 +1,57 @@
+name: Build & Release Extension
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get Version
+        id: get_version
+        run: |
+          if [ "${{ github.ref_type }}" = "tag" ]; then
+            VERSION=${GITHUB_REF_NAME#v}
+          else
+            VERSION=$(grep -o '"version": "[^"]*"' extension/manifest.json | cut -d'"' -f4)
+          fi
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "Building Cupid Scout v$VERSION"
+
+      - name: Create Release Zip Package
+        run: |
+          mkdir -p dist
+          cd extension
+          zip -r ../dist/cupid-scout-extension-v${{ steps.get_version.outputs.VERSION }}.zip . -x "*.DS_Store" "*__pycache__*"
+          cd ..
+          sha256sum dist/cupid-scout-extension-v${{ steps.get_version.outputs.VERSION }}.zip > dist/checksums.txt
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
+        with:
+          tag_name: ${{ github.ref_name || format('v{0}', steps.get_version.outputs.VERSION) }}
+          name: Cupid Scout Extension v${{ steps.get_version.outputs.VERSION }}
+          body: |
+            ## 🏹 Cupid Scout Chromium Extension v${{ steps.get_version.outputs.VERSION }}
+            
+            Автономный ассистент для дейтинга (Tinder, Bumble, Mamba, Badoo) на базе локального Qwen (LM Studio) / Gemini.
+            
+            ### 📦 Инструкция по установке:
+            1. Скачайте прикрепленный архив `cupid-scout-extension-v${{ steps.get_version.outputs.VERSION }}.zip` ниже.
+            2. Распакуйте архив в любую папку.
+            3. В браузере (Chrome / Brave / Edge / Arc) откройте `chrome://extensions`.
+            4. Включите **«Режим разработчика»** (Developer mode) в правом верхнем углу.
+            5. Нажмите **«Загрузить распакованное»** (Load unpacked) и укажите распакованную папку.
+          files: |
+            dist/cupid-scout-extension-v${{ steps.get_version.outputs.VERSION }}.zip
+            dist/checksums.txt
