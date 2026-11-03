@@ -19,6 +19,8 @@ except ImportError:
 from core.models import ProfileData
 from core.scorer import ProfileScorer
 from core.notifier import Notifier
+from core.storage import StorageManager
+from core.dossier import DossierGenerator
 from adapters.telegram_adapter import TelegramDatingAdapter
 from adapters.browser_adapter import BrowserCDPAdapter
 
@@ -99,6 +101,8 @@ def run_scan(platform: str = "tg_leomatchbot", limit: int = 5):
     print(f"Запуск агента на платформе: {platform}")
     scorer = ProfileScorer()
     notifier = Notifier()
+    storage = StorageManager()
+    dossier_gen = DossierGenerator()
 
     if platform.startswith("tg_"):
         adapter = TelegramDatingAdapter()
@@ -115,6 +119,13 @@ def run_scan(platform: str = "tg_leomatchbot", limit: int = 5):
         profile = adapter.fetch_next_profile()
         eval_res = scorer.evaluate(profile)
 
+        # Формируем досье
+        dossier = dossier_gen.generate(profile)
+
+        # Сохраняем в базу данных и архив
+        saved_id = storage.save_scan(profile, eval_res, dossier)
+        print(f"💾 Анкета сохранена в базу (ID: {saved_id})")
+
         print(f"👤 {profile.name}, {profile.age} | Внешность: {eval_res.attractiveness_score}/10 | FWB Score: {eval_res.casual_intent_score}/10")
         
         if eval_res.is_match:
@@ -125,14 +136,48 @@ def run_scan(platform: str = "tg_leomatchbot", limit: int = 5):
             print(f"Пропуск: {eval_res.reason}")
             adapter.dislike(profile)
 
-        time.sleep(1.5)
+        time.sleep(2.0)
 
     print("\nСессия сканирования завершена!")
+
+def show_stats():
+    """Показать общую статистику свайпов"""
+    storage = StorageManager()
+    stats = storage.get_stats()
+    print("\n" + "="*50)
+    print("📊 СТАТИСТИКА CUPID SCOUT:")
+    print("="*50)
+    print(f"Всего просмотрено анкет: {stats['total']}")
+    print(f"Одобрено (лайки):         {stats['liked']} ❤️")
+    print(f"Пропущено (дизлайки):     {stats['skipped']} ⏭")
+    print(f"Средний балл красоты:     {stats['avg_attractiveness']}/10 ⭐")
+    print("="*50 + "\n")
+
+def show_history():
+    """Показать последние сохраненные анкеты"""
+    storage = StorageManager()
+    import sqlite3
+    from core.storage import DB_PATH
+    with sqlite3.connect(DB_PATH) as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT id, timestamp, name, age, attractiveness_score, casual_intent_score, action, reason FROM profiles ORDER BY timestamp DESC LIMIT 15")
+        rows = cursor.fetchall()
+        
+    print("\n" + "="*90)
+    print(f"{'ID':<18} | {'Имя/Возраст':<15} | {'Баллы':<12} | {'Действие':<10} | {'Вердикт'}")
+    print("="*90)
+    for r in rows:
+        name_age = f"{r[2] or 'Девушка'}, {r[3] or '?'}"
+        scores = f"{r[4]:.1f}/{r[5]:.1f}"
+        act = "❤️ LIKE" if r[6] == "liked" else "⏭ PASS"
+        reason = (r[7][:40] + "...") if r[7] and len(r[7]) > 40 else (r[7] or "")
+        print(f"{r[0]:<18} | {name_age:<15} | {scores:<12} | {act:<10} | {reason}")
+    print("="*90 + "\n")
 
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description="Dating AI Agent")
-    parser.add_argument("command", choices=["platforms", "test-eval", "scan"], nargs="?", default="platforms")
+    parser.add_argument("command", choices=["platforms", "test-eval", "scan", "stats", "history"], nargs="?", default="platforms")
     parser.add_argument("--platform", default="tg_leomatchbot", help="ID платформы")
     parser.add_argument("--limit", type=int, default=5, help="Количество анкет")
     args = parser.parse_args()
@@ -143,3 +188,7 @@ if __name__ == "__main__":
         run_test_eval()
     elif args.command == "scan":
         run_scan(platform=args.platform, limit=args.limit)
+    elif args.command == "stats":
+        show_stats()
+    elif args.command == "history":
+        show_history()
