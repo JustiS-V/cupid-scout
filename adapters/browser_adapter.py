@@ -89,8 +89,13 @@ class BrowserCDPAdapter(BasePlatformAdapter):
 
     def is_limit_reached(self) -> bool:
         """Проверяет, не вылезло ли всплывающее окно об исчерпании суточного лимита лайков"""
+        reached, _ = self.get_limit_details()
+        return reached
+
+    def get_limit_details(self) -> tuple:
+        """Возвращает (is_reached: bool, timer_string: Optional[str])"""
         if not self.page:
-            return False
+            return False, None
         try:
             text = self.page.evaluate("() => document.body.innerText.toLowerCase()")
             limit_markers = [
@@ -107,10 +112,30 @@ class BrowserCDPAdapter(BasePlatformAdapter):
             ]
             for m in limit_markers:
                 if m in text:
-                    return True
+                    # Ищем таймер вида 11:45:20
+                    import re
+                    match = re.search(r'\b\d{1,2}:\d{2}:\d{2}\b', text)
+                    timer_str = match.group(0) if match else None
+                    return True, timer_str
         except Exception:
             pass
-        return False
+        return False, None
+
+    def dismiss_limit_modal(self):
+        """Пытается закрыть модалку об исчерпании лайков"""
+        if not self.page:
+            return
+        try:
+            self.page.evaluate("""() => {
+                const btns = Array.from(document.querySelectorAll('button, div[role="button"]'));
+                const closeBtn = btns.find(b => {
+                    const t = b.innerText.toLowerCase();
+                    return t.includes('не зараз') || t.includes('no thanks') || t.includes('нет') || t.includes('позже') || b.getAttribute('aria-label') === 'Close';
+                });
+                if (closeBtn) closeBtn.click();
+            }""")
+        except Exception:
+            pass
 
     def like(self, profile: ProfileData):
         """Лайк / свайп вправо с естественной паузой"""

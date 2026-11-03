@@ -238,12 +238,17 @@ def show_analytics():
     print("="*105)
     print(f"\n📄 Полный аналитический отчет сформирован: {ANALYTICS_REPORT_MD}\n")
 
+def run_auto_swipe(limit: int = 100):
+    """Свайпать до полного исчерпания суточного лимита Tinder"""
+    from core.auto_swiper import run_auto_exhaustion
+    run_auto_exhaustion(max_swipes=limit)
+
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description="Dating AI Agent")
-    parser.add_argument("command", choices=["platforms", "test-eval", "scan", "stats", "history", "matches", "chat", "analytics"], nargs="?", default="platforms")
+    parser.add_argument("command", choices=["platforms", "test-eval", "scan", "stats", "history", "matches", "chat", "analytics", "auto-swipe"], nargs="?", default="platforms")
     parser.add_argument("--platform", default="tg_leomatchbot", help="ID платформы")
-    parser.add_argument("--limit", type=int, default=5, help="Количество анкет")
+    parser.add_argument("--limit", type=int, default=100, help="Количество анкет")
     args = parser.parse_args()
 
     if args.command == "platforms":
@@ -262,3 +267,5 @@ if __name__ == "__main__":
         run_chat()
     elif args.command == "analytics":
         show_analytics()
+    elif args.command == "auto-swipe":
+        run_auto_swipe(limit=args.limit)
