@@ -33,121 +33,68 @@ SYSTEM_PROMPT = """
 }
 """
 
+from pathlib import Path
+from typing import Optional
+from core.models import ProfileData, EvaluationResult
+from core.vision_client import MediaNodeVisionClient, VisionError
+
 class ProfileScorer:
+    """
+    Оценщик анкет на базе локальной Vision-модели (LM Studio / Ollama),
+    сохраняющий контракт проекта media_node.
+    """
     def __init__(self, min_attractiveness: float = 7.0, min_intent: float = 6.0):
         self.min_attractiveness = min_attractiveness
         self.min_intent = min_intent
-        self.use_local_lms = os.getenv("USE_LOCAL_LM_STUDIO", "true").lower() in ["true", "1", "yes"]
-        self.lms_base_url = os.getenv("LM_STUDIO_BASE_URL", "http://127.0.0.1:1234/v1")
-        self.lms_model = os.getenv("LM_STUDIO_MODEL", "default")
+        self.client = MediaNodeVisionClient()
         self.gemini_key = os.getenv("GEMINI_API_KEY")
-        self.openai_key = os.getenv("OPENAI_API_KEY")
-
-    def _call_lm_studio(self, profile: ProfileData, prompt: str) -> EvaluationResult:
-        """Вызов локального LM Studio через OpenAI-совместимый эндпоинт"""
-        import requests
-        headers = {"Content-Type": "application/json"}
-        
-        # Собираем мультимодальный контент
-        messages_content = [{"type": "text", "text": prompt}]
-        
-        for path_str in profile.photo_paths:
-            path = Path(path_str)
-            if path.exists() and path.is_file():
-                with open(path, "rb") as f:
-                    b64_img = base64.b64encode(f.read()).decode("utf-8")
-                mime = "image/jpeg" if path.suffix.lower() in [".jpg", ".jpeg"] else "image/png"
-                messages_content.append({
-                    "type": "image_url",
-                    "image_url": {"url": f"data:{mime};base64,{b64_img}"}
-                })
-
-        payload = {
-            "model": self.lms_model,
-            "messages": [
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": messages_content if len(messages_content) > 1 else prompt}
-            ],
-            "temperature": 0.4
-        }
-
-        resp = requests.post(f"{self.lms_base_url}/chat/completions", json=payload, headers=headers, timeout=60)
-        resp.raise_for_status()
-        raw_text = resp.json()["choices"][0]["message"]["content"].strip()
-        
-        if "```json" in raw_text:
-            raw_text = raw_text.split("```json")[1].split("```")[0].strip()
-        elif "```" in raw_text:
-            raw_text = raw_text.split("```")[1].split("```")[0].strip()
-
-        data = json.loads(raw_text)
-        res = EvaluationResult(**data)
-        if res.attractiveness_score < self.min_attractiveness or res.casual_intent_score < self.min_intent:
-            res.is_match = False
-        return res
-
-    def _call_gemini(self, profile: ProfileData, prompt: str) -> EvaluationResult:
-        import google.generativeai as genai
-        genai.configure(api_key=self.gemini_key)
-        model = genai.GenerativeModel("gemini-2.5-flash")
-
-        contents = [prompt]
-        for path_str in profile.photo_paths:
-            path = Path(path_str)
-            if path.exists() and path.is_file():
-                with open(path, "rb") as f:
-                    image_bytes = f.read()
-                mime = "image/jpeg" if path.suffix.lower() in [".jpg", ".jpeg"] else "image/png"
-                contents.append({"mime_type": mime, "data": image_bytes})
-
-        response = model.generate_content(contents)
-        raw_text = response.text.strip()
-        if "```json" in raw_text:
-            raw_text = raw_text.split("```json")[1].split("```")[0].strip()
-        elif "```" in raw_text:
-            raw_text = raw_text.split("```")[1].split("```")[0].strip()
-
-        data = json.loads(raw_text)
-        res = EvaluationResult(**data)
-        # Apply strict threshold check
-        if res.attractiveness_score < self.min_attractiveness or res.casual_intent_score < self.min_intent:
-            res.is_match = False
-        return res
 
     def evaluate(self, profile: ProfileData) -> EvaluationResult:
-        user_prompt = f"""
-{SYSTEM_PROMPT}
+        # Пробуем локальный сервер в стиле media_node
+        try:
+            raw_eval = self.client.inspect_profile(
+                image_paths=profile.photo_paths,
+                bio=profile.bio or profile.raw_text or "",
+                name=profile.name or "Unknown",
+                age=profile.age
+            )
 
-Данные анкеты:
-Имя: {profile.name}
-Возраст: {profile.age}
-Город: {profile.city}
-Текст био: {profile.bio}
-Дополнительный текст: {profile.raw_text}
-Количество фото: {len(profile.photo_paths)}
-"""
-        if self.use_local_lms:
-            try:
-                return self._call_lm_studio(profile, user_prompt)
-            except Exception as e:
-                print(f"[Scorer] Локальный LM Studio ({self.lms_base_url}) не ответил: {e}")
+            attractiveness = float(raw_eval.get("attractiveness_score", 0.0))
+            intent = float(raw_eval.get("casual_intent_score", 0.0))
+            is_match = raw_eval.get("is_match", False) and (attractiveness >= self.min_attractiveness) and (intent >= self.min_intent)
 
+            return EvaluationResult(
+                has_real_person=raw_eval.get("has_real_person", True),
+                face_visible=raw_eval.get("face_visible", True),
+                attractiveness_score=attractiveness,
+                vibe_type=raw_eval.get("vibe_type", "casual"),
+                casual_intent_score=intent,
+                is_match=is_match,
+                red_flags=[],
+                green_flags=[],
+                reason=f"{raw_eval.get('reason', '')} (Модель: {raw_eval.get('model')}, {raw_eval.get('elapsed_seconds')}s)",
+                suggested_opener=raw_eval.get("suggested_opener", "Привет! Классный вайб на фото, как проходит вечер?")
+            )
+        except Exception as e:
+            print(f"[Scorer] Локальный Vision-клиент (media_node) не сработал: {e}")
+
+        # Облачный fallback (Gemini) если задан ключ
         if self.gemini_key:
             try:
-                return self._call_gemini(profile, user_prompt)
+                return self._call_gemini(profile, f"Оцени анкету: {profile.name}, {profile.age}, {profile.bio}")
             except Exception as e:
                 print(f"[Scorer] Ошибка вызова Gemini API: {e}")
 
-        # Fallback dummy for testing without API keys
+        # Демо-заглушка для отладки
         return EvaluationResult(
             has_real_person=True,
             face_visible=True,
-            attractiveness_score=7.5,
-            vibe_type="casual",
-            casual_intent_score=7.0,
+            attractiveness_score=7.8,
+            vibe_type="casual_party",
+            casual_intent_score=7.5,
             is_match=True,
             red_flags=[],
-            green_flags=["Тестовый профиль"],
-            reason="Тестовый режим (укажите GEMINI_API_KEY в .env для реального VLM-анализа)",
+            green_flags=["Живые фото", "Вайбовое био"],
+            reason="Тестовый режим (LM Studio сервер не запущен; запустите: lms server start)",
             suggested_opener="Привет! Классный вайб на фото, за спонтанный кофе сегодня?"
         )
