@@ -243,12 +243,18 @@ def run_auto_swipe(limit: int = 100):
     from core.auto_swiper import run_auto_exhaustion
     run_auto_exhaustion(max_swipes=limit)
 
+def run_autonomous_loop(limit: int = 50):
+    """Автономный цикл: свайпаем, при взаимном мэтче сразу пишем первое сообщение"""
+    from core.autonomous_match_swiper import AutonomousMatchSwiper
+    agent = AutonomousMatchSwiper()
+    agent.run(max_swipes=limit)
+
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description="Dating AI Agent")
-    parser.add_argument("command", choices=["platforms", "test-eval", "scan", "stats", "history", "matches", "chat", "analytics", "auto-swipe"], nargs="?", default="platforms")
+    parser.add_argument("command", choices=["platforms", "test-eval", "scan", "stats", "history", "matches", "chat", "analytics", "auto-swipe", "loop"], nargs="?", default="platforms")
     parser.add_argument("--platform", default="tg_leomatchbot", help="ID платформы")
-    parser.add_argument("--limit", type=int, default=100, help="Количество анкет")
+    parser.add_argument("--limit", type=int, default=50, help="Количество анкет")
     args = parser.parse_args()
 
     if args.command == "platforms":
@@ -269,3 +275,5 @@ if __name__ == "__main__":
         show_analytics()
     elif args.command == "auto-swipe":
         run_auto_swipe(limit=args.limit)
+    elif args.command == "loop":
+        run_autonomous_loop(limit=args.limit)
