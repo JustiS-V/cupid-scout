@@ -140,9 +140,21 @@ def scan_all_matches():
         context = browser.contexts[0]
         tinder_page = [page for page in context.pages if "tinder.com" in page.url][0]
 
-        # Get list of links
+        # Пытаемся переключиться на вкладку 'Пари'
+        try:
+            tinder_page.evaluate("""() => {
+                const tabs = Array.from(document.querySelectorAll('button[role="tab"]'));
+                const matchesTab = tabs.find(t => t.innerText.includes('Пари') || t.innerText.includes('Matches'));
+                if (matchesTab) matchesTab.click();
+            }""")
+            time.sleep(1.5)
+        except Exception:
+            pass
+
+        # Get list of links (messages and matches)
         match_links = tinder_page.evaluate("""() => {
-            return Array.from(document.querySelectorAll('a[href*="/app/messages/"]')).map(a => a.getAttribute('href'));
+            const links = Array.from(document.querySelectorAll('a[href*="/app/messages/"], a[href*="/app/matches/"]')).map(a => a.getAttribute('href'));
+            return links;
         }""")
 
         unique_links = list(dict.fromkeys(match_links))
