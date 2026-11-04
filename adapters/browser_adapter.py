@@ -6,7 +6,7 @@ from core.models import ProfileData
 
 class BrowserCDPAdapter(BasePlatformAdapter):
     """
-    Адаптер для Web-версий дейтингов (Tinder, Bumble, Mamba, Pure Web, Badoo).
+    Адаптер для Web-версий дейтингов (Tinder, Bumble, Pure Web, Badoo, Hinge).
     Подключается через Playwright к вашему залогиненному Google Chrome через порт 9222.
     
     Механика работы:

@@ -129,7 +129,7 @@ function swipe(direction) {
   const isRight = direction === "right";
 
   if (platform === "Telegram") {
-    // Поиск кнопок в Telegram Web (боты ДайВинчик и аналоги)
+    // Поиск кнопок в Telegram Web (боты знакомств)
     const buttons = Array.from(document.querySelectorAll("button, .reply-markup-button, .btn-primary, .InlineButton"));
     const likeBtn = buttons.find(b => b.innerText.includes("❤️") || b.innerText.includes("👍") || b.innerText.trim() === "1");
     const passBtn = buttons.find(b => b.innerText.includes("👎") || b.innerText.includes("❌") || b.innerText.trim() === "2");

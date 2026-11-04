@@ -7,10 +7,10 @@ from core.models import ProfileData
 
 class TelegramDatingAdapter(BasePlatformAdapter):
     """
-    Адаптер для Telegram-дейтинг ботов (например, @leomatchbot - ДайВинчик).
+    Адаптер для украинских Telegram-дейтинг ботов.
     Использует клиент Telethon под вашим аккаунтом.
     """
-    def __init__(self, bot_handle: str = "@leomatchbot", download_dir: str = "./downloads"):
+    def __init__(self, bot_handle: str = "@dating_ua_bot", download_dir: str = "./downloads"):
         self.bot_handle = bot_handle
         self.download_dir = Path(download_dir)
         self.download_dir.mkdir(parents=True, exist_ok=True)

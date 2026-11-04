@@ -1,6 +1,6 @@
 # 🏹 Cupid Scout AI
 
-> Автономный агент и Chromium-расширение для отбора анкет на дейтинг-платформах (Tinder, Bumble, Mamba, Badoo) на базе локального Qwen (LM Studio) / Gemini.
+> Автономный агент и Chromium-расширение для отбора анкет на дейтинг-платформах (Tinder, Bumble, Badoo, Pure, Hinge) на базе локального Qwen (LM Studio) / Gemini.
 
 [![GitHub release](https://img.shields.io/github/v/release/JustiS-V/cupid-scout?color=ff4b6e&style=flat-square)](https://github.com/JustiS-V/cupid-scout/releases)
 [![Sponsor](https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?style=flat-square)](https://github.com/JustiS-V/cupid-scout#sponsor)
@@ -12,12 +12,12 @@
 
 | Платформа | Специфика | Метод автоматизации | Антифрод / Риск |
 | :--- | :--- | :--- | :--- |
-| **ДайВинчик (@leomatchbot)** | Telegram-бот с огромной базой | `Telethon` (Userbot) | **Низкий** (быстрый старт) |
-| **Pure** | 100% целевая аудитория (секс/FWB/casual) | Android Emulator (Appium) | **Средний** (анонимные чаты) |
-| **Tinder Web** | Массовая аудитория, много анкет | Playwright CDP к залогиненному Chrome | **Высокий** (обходится через CDP) |
-| **Bumble Web** | Девушки пишут первыми | Playwright CDP | **Средний** |
-| **Mamba Web** | Много прямого поиска без обязательств | Playwright / HTTP-сессии | **Низкий-средний** |
-| **VK Знакомства** | Интеграция с профилями VK | Playwright / VK API | **Низкий** |
+| **Tinder Web** | Массовая аудитория, много анкет в Украине и мире | Playwright CDP / Direct WebSocket | **Высокий** (обходится через CDP) |
+| **Badoo Web** | Максимальная отзывчивость, топ база в регионах и Киеве | Playwright CDP / Chrome Extension | **Низкий** |
+| **Bumble Web** | Премиальная IT/креативная аудитория | Playwright CDP | **Средний** |
+| **Pure Web / PWA** | 100% целевая аудитория (секс/FWB/casual) | Chrome Extension / PWA | **Средний** (анонимные чаты) |
+| **Hinge Web** | Экспаты / англоязычная аудитория | Chrome Extension / Playwright | **Низкий** |
+| **Telegram UA Dating Bots** | Telegram-боты для знакомств в Украине | `Telethon` (Userbot) | **Низкий** (быстрый старт) |
 
 ---
 
@@ -55,8 +55,8 @@ python main.py test-eval
 
 ### Запуск сканера:
 ```bash
-# Telegram ДайВинчик
-python main.py scan --platform tg_leomatchbot --limit 10
+# Telegram UA Dating Bots
+python main.py scan --platform tg_dating_bot --limit 10
 
 # Tinder Web (требуется предварительно запущенный Chrome с портом 9222)
 python main.py scan --platform tinder_web --limit 10

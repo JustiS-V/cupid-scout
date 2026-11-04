@@ -54,7 +54,7 @@
     },
     {
       "id": "tg_web_dating",
-      "name": "Telegram Web (ДайВинчик & UA боты)",
+      "name": "Telegram Web (UA Dating Bots)",
       "type": "telegram_web",
       "url": "https://web.telegram.org",
       "region": "Украина (Огромная база 18-26 лет)",

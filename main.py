@@ -57,7 +57,7 @@ def show_platforms():
             )
 
         console.print(table)
-        console.print("\n[bold green]Рекомендация под спор:[/bold green] Используйте [bold]tg_leomatchbot[/bold] для мгновенного старта или [bold]tinder_web[/bold] через Google Chrome с отладчиком.\n")
+        console.print("\n[bold green]Рекомендация:[/bold green] Используйте [bold]tinder_web[/bold] через Google Chrome с отладчиком или [bold]badoo_web[/bold].\n")
     except ImportError:
         # Fallback to plain text table
         print("\n" + "="*80)
@@ -290,7 +290,7 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description="Dating AI Agent")
     parser.add_argument("command", choices=["platforms", "test-eval", "scan", "stats", "history", "matches", "chat", "analytics", "auto-swipe", "loop", "social"], nargs="?", default="platforms")
-    parser.add_argument("--platform", default="tg_leomatchbot", help="ID платформы")
+    parser.add_argument("--platform", default="tinder_web", help="ID платформы")
     parser.add_argument("--limit", type=int, default=50, help="Количество анкет")
     args = parser.parse_args()
 
