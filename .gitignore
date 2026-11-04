@@ -8,3 +8,20 @@ dist/
 *.session
 *.session-journal
 .dating_chrome_profile/
+
+# Runtime, logs, and media assets
+data/screenshots/
+data/matches/
+data/mutual_matches/*.jpg
+data/*.jpg
+data/*.png
+data/quota_status.json
+data/chat_logs.jsonl
+data/chat_proposals.md
+debug_*.py
+test_*.py
+check_*.py
+inspect_*.py
+send_both.py
+send_replies_and_openers.py
+direct_send.py

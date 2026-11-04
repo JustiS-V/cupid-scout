@@ -1,87 +1,161 @@
-# 🏹 Cupid Scout AI
+# 🏹 Cupid Scout AI — Autonomous Matchmaker & Conversational Dating Agent
 
-> Автономный агент и Chromium-расширение для отбора анкет на дейтинг-платформах (Tinder, Bumble, Badoo, Pure, Hinge) на базе локального Qwen (LM Studio) / Gemini.
+> **Статус проекта: 🏁 v1.0.0 Feature-Complete (Production Ready / Финализирован)**  
+> Автономный AI-дейтинг агент и Chrome-контроллер на базе локального LLM/VLM (Apple Silicon Metal / LM Studio), который полностью берет на себя рутину знакомств: свайпает, фильтрует, **общается вместо вас**, ведет остроумный диалог на родном языке девушки и переводит теплые контакты в личные соцсети.
 
 [![GitHub release](https://img.shields.io/github/v/release/JustiS-V/cupid-scout?color=ff4b6e&style=flat-square)](https://github.com/JustiS-V/cupid-scout/releases)
-[![Sponsor](https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?style=flat-square)](https://github.com/JustiS-V/cupid-scout#sponsor)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
+[![Python 3.9+](https://img.shields.io/badge/Python-3.9%2B-blue.svg?style=flat-square)](https://www.python.org/)
+[![CDP: Direct WebSocket](https://img.shields.io/badge/CDP-Direct%20WebSocket-green.svg?style=flat-square)](core/direct_tinder_cdp.py)
 
 ---
 
-## 📋 Поддерживаемые платформы (`platforms.json`)
+## 🌟 Ключевые возможности: Что умеет агент
 
-| Платформа | Специфика | Метод автоматизации | Антифрод / Риск |
-| :--- | :--- | :--- | :--- |
-| **Tinder Web** | Массовая аудитория, много анкет в Украине и мире | Playwright CDP / Direct WebSocket | **Высокий** (обходится через CDP) |
-| **Badoo Web** | Максимальная отзывчивость, топ база в регионах и Киеве | Playwright CDP / Chrome Extension | **Низкий** |
-| **Bumble Web** | Премиальная IT/креативная аудитория | Playwright CDP | **Средний** |
-| **Pure Web / PWA** | 100% целевая аудитория (секс/FWB/casual) | Chrome Extension / PWA | **Средний** (анонимные чаты) |
-| **Hinge Web** | Экспаты / англоязычная аудитория | Chrome Extension / Playwright | **Низкий** |
-| **Telegram UA Dating Bots** | Telegram-боты для знакомств в Украине | `Telethon` (Userbot) | **Низкий** (быстрый старт) |
+### 1. 🤖 Автономное общение вместо вас (Autonomous Conversational AI)
+Больше не нужно вручную сидеть в приложении и придумывать первые фразы:
+* **Мгновенный перехват мэтчей:** в цикле свайпинга при появлении окна «Це пара! / It’s a Match!» агент моментально перехватывает событие.
+* **Генерация контекстных оупенеров:** анализирует фото, текст био, хобби и цели знакомства, создавая легкое, цепляющее сообщение без банальщины и пикап-клише.
+* **Автономное ведение диалога (Banter & Flirt):**
+  * Мониторит входящие ответы через фоновый `ChatObserver`.
+  * При получении ответа рассчитывает время задержки ($\Delta t$), эмоциональный тон и интерес.
+  * Генерирует остроумный ответ через локальную LLM (`qwen2.5-3b-instruct` / Metal GPU) и автоматически отправляет его в чат.
+* **Человеческая моторика печати (Human Typing):**
+  * Посимвольный ввод текста со случайными задержками (40–120 мс на клавишу).
+  * Естественные паузы на знаках препинания (200–450 мс).
+  * Нулевой риск детекции автоматизации и теневых банов.
+
+---
+
+### 2. 🌍 Строгое совпадение языка анкеты (Strict Native Language Matching)
+Агент общается с девушкой **строго на том языке, на котором написана её анкета**:
+* 🇺🇦 **Украинский:** естественный разговорный слог, ирония, современный киевский/львовский контекст.
+* 🇬🇧 **Английский:** остроумный native-вайб для экспатов и иностранок.
+* 🇪🇸 **Испанский:** легкий, игривый флирт под латиноамериканский/испанский культурный код.
+* 🇷🇺 **Русский:** адаптация под язык русскоязычных анкет.
+
+---
+
+### 3. 🧠 Глубокая поведенческая аналитика (Dating Behavioral Intelligence)
+Система собирает телеметрию диалогов в SQLite (`dating.db`) и JSONL:
+* **Скорость отклика ($\Delta t$):** точное время от нашего сообщения до ее ответа (в минутах и секундах).
+* **Коэффициент вклада (Investment Ratio, IR):** соотношение объема символов ее сообщений к нашим. Показывает реальную заинтересованность.
+* **Взаимность вопросов:** задает ли девушка встречные вопросы или просто отвечает.
+* **Поведенческие архетипы:** автоматическая классификация (`⚡ Fast Responder`, `⚖️ Neutral Chat`, `Ghoster`).
+* **Живой отчет:** генерируется в `data/behavioral_analysis_report.md`.
+
+---
+
+### 4. 📲 Перелив аудитории в личные соцсети (Social Growth Funnel)
+Агент превращает Tinder в генератор целевых подписчиков для ваших личных каналов:
+* **Instagram / Threads / TikTok / Telegram Bridge:** на 2–3 ходу диалога, когда установлен раппорт, бот естественно предлагает перейти в Instagram или Threads.
+* **Social Leads Harvester:** автоматически извлекает никнеймы `@instagram` из анкет и чатов, сохраняя их в базу `social_leads`.
+* **Сводный отчет конверсии:** `data/social_growth_report.md` с воронкой переходов.
+
+---
+
+### 5. 🛡 Автоматическое управление квотами и лимитами
+* Отслеживает лимит бесплатных лайков (Free Tier Tinder).
+* При появлении платного попапа («Плани передплати Tinder Plus®») бот фиксирует лимит, закрывает модалку и ставит точный таймер кулдауна (12 часов), предотвращая пустые клики.
+
+---
+
+## 🏗 Архитектура системы
+
+```mermaid
+flowchart TD
+    A["🌐 Tinder Web (Dolphin Anty / CDP:9222)"] --> B["⚡ DirectTinderCDP (Fast WebSocket)"]
+    B --> C{"🔍 Тип события"}
+    
+    C -->|Свайпинг| D["👁 Vision/Text Scorer (Фильтрация анкет)"]
+    D -->|Лайк / Skip| B
+    
+    C -->|Окно 'Це пара!'| E["💌 Autonomous Match Swiper"]
+    E --> F["🧠 Локальный LLM Engine (M1 Metal / Qwen)"]
+    F -->|Оупенер на языке анкеты| B
+    
+    C -->|Входящий ответ| G["🕵️ ChatObserver"]
+    G --> H["📊 Behavioral Analytics Manager (dating.db)"]
+    H --> F
+    F -->|Авто-ответ / Banter| B
+    
+    H -->|Turn 2-3| I["📲 Social Funnel Bridge (Instagram / Threads)"]
+```
 
 ---
 
 ## 🚀 Быстрый старт
 
-### 1. Установка зависимостей
+### 1. Установка окружения
 ```bash
+git clone git@github.com:JustiS-V/cupid-scout.git
+cd cupid-scout
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 2. Настройка переменных окружения
-Скопируйте конфиг и добавьте ключи:
+### 2. Запуск локального движка LM Studio (Mac Apple Silicon или Windows)
+Загрузите модель `qwen2.5-3b-instruct` (или Qwen2.5-VL / media-vision):
 ```bash
-cp .env.example .env
-```
-Минимум для работы Vision-модели:
-- `GEMINI_API_KEY`: ваш бесплатный или платный ключ Google AI Studio.
-- Опционально: `NOTIFICATION_BOT_TOKEN` и `NOTIFICATION_CHAT_ID` для получения уведомлений о топовых мэтчах в Telegram.
-
----
-
-## 🛠 Использование CLI
-
-### Посмотреть список площадок и аналитику:
-```bash
-python main.py platforms
+lms server start --port 1234 --cors
 ```
 
-### Тестовый прогон оценки анкеты через LLM:
+### 3. Подключение к браузеру
+Запустите Google Chrome или профиль Dolphin Anty с открытым портом отладки:
 ```bash
-python main.py test-eval
-```
-
-### Запуск сканера:
-```bash
-# Telegram UA Dating Bots
-python main.py scan --platform tg_dating_bot --limit 10
-
-# Tinder Web (требуется предварительно запущенный Chrome с портом 9222)
-python main.py scan --platform tinder_web --limit 10
-```
-
----
-
-## 💡 Обход антибота для Web-дейтингов (Tinder / Bumble)
-
-Чтобы Cloudflare не выдавал капчу и не блокировал браузер, запускайте ваш обычный Google Chrome через терминал с флагом отладки:
-
-```bash
-# macOS
+# Google Chrome
 /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --remote-debugging-port=9222
 ```
-
-Войдите в свой аккаунт руками, а скрипт подключится к уже открытой сессии через порт `9222` и будет автоматически анализировать профили и свайпать!
+Войдите в свой аккаунт Tinder (`https://tinder.com/app/recs`).
 
 ---
 
-## 💖 Поддержать автора / Sponsor
+## 🛠 Команды CLI (`main.py`)
 
-Если проект сэкономил вам сотни часов рутинного свайпинга или помог найти вторую половинку / приятную встречу — поддержите разработку:
+| Команда | Описание |
+| :--- | :--- |
+| `python main.py loop --limit 50` | **Полный автономный цикл:** свайпает, при мэтче сразу пишет первое сообщение, возвращается к свайпам |
+| `python main.py analytics` | **Поведенческая аналитика:** выводит таблицу времени ответов девушек, коэффициенты вклада и архетипы |
+| `python main.py social` | **Воронка соцсетей:** статистика перелива в Instagram/Threads и каталог собранных лидов |
+| `python main.py chat` | Генерация и просмотр предложений оупенеров для взаимных мэтчей |
+| `python main.py auto-swipe --limit 100` | Фоновый свайпинг до момента срабатывания лимита Tinder Plus |
+| `python main.py platforms` | Список доступных проверенных платформ знакомств |
+| `python main.py stats` | Сводная статистика по базе анкет и лайков |
 
-- **GitHub Sponsors:** [github.com/sponsors/JustiS-V](https://github.com/sponsors/JustiS-V)
-- **Buy Me a Coffee:** [buymeacoffee.com/justis_v](https://www.buymeacoffee.com/justis_v)
-- **Ko-fi:** [ko-fi.com/justis_v](https://ko-fi.com/justis_v)
-- **Crypto (USDT TRC20 / TON):** Принимаются любые донаты на развитие локальных VLM-алгоритмов!
+---
+
+## 📁 Структура репозитория
+
+```
+├── core/
+│   ├── direct_tinder_cdp.py      # Мгновенный легковесный WebSocket CDP-клиент
+│   ├── autonomous_match_swiper.py # Автономный цикл свайп + авто-первое сообщение
+│   ├── chat_observer.py          # Мониторинг ответов девушек и фиксация времени отклика
+│   ├── chat_sender.py            # Посимвольная печать сообщений с человеческими паузами
+│   ├── chat_generator.py         # Промпты и генерация реплик через локальный LLM
+│   ├── analytics.py              # Психолингвистическая и поведенческая аналитика
+│   ├── social_funnel.py          # Воронка перелива в Instagram, Threads, TikTok, TG
+│   ├── quota_manager.py          # Учет суточных лимитов и кулдауна свайпов
+│   └── scorer.py                 # Фильтрация и оценка анкет по правилам
+├── social_growth_config.json     # Конфигурация аккаунтов соцсетей и шаблонов перевода
+├── platforms.json                # Список разрешенных дейтинг-платформ
+├── main.py                       # Главный CLI-интерфейс
+└── data/                         # SQLite база (dating.db) и Markdown-отчеты
+```
+
+---
+
+## 🔒 Безопасность и этичность
+
+1. **Анти-спам:** Агент никогда не рассылает шаблонный спам или ссылки в первом сообщении.
+2. **Защита от банов:** Все клики, тайминги и движения мыши используют рандомизацию интервалов.
+3. **Локальная конфиденциальность:** Все текстовые данные и переписки анализируются локально на вашем компьютере (Apple Silicon Metal / LM Studio), без утечки на сторонние облачные серверы.
+
+---
+
+## 🏁 Закрытие репозитория / Transition Note
+
+> **Проект `cupid-scout` полностью финализирован (Release v1.0.0).**  
+> Вся кодовая база стабильна, протестирована на реальных сессиях и решает задачу полной автономности в дейтинг-приложениях.  
+> Дальнейшее развитие архитектуры переходит в выделенный проект **Social Media AI Agent / Social Autopilot** для масштабирования контента и личных соцсетей (Instagram, Threads, TikTok).
