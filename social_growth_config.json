@@ -1,0 +1,123 @@
+{
+  "user_profiles": {
+    "instagram": {
+      "handle": "@val_shvedov",
+      "url": "https://instagram.com/val_shvedov",
+      "focus": "Эстетика, лайфстайл, спорт, путешествия, сторис",
+      "hook_category": "visual_lifestyle"
+    },
+    "threads": {
+      "handle": "@val_shvedov",
+      "url": "https://threads.net/@val_shvedov",
+      "focus": "Мысли, треш-истории свиданий, ирония, юмор",
+      "hook_category": "witty_thoughts"
+    },
+    "tiktok": {
+      "handle": "@val_shvedov",
+      "url": "https://tiktok.com/@val_shvedov",
+      "focus": "Короткие видео, тренды, лайфстайл",
+      "hook_category": "video_trends"
+    },
+    "telegram": {
+      "handle": "@bobrshv",
+      "url": "https://t.me/bobrshv",
+      "focus": "Прямая связь, кружочки, быстрый чат без лагов",
+      "hook_category": "direct_chat"
+    }
+  },
+  "funnel_rules": {
+    "transfer_turn_threshold": 2,
+    "min_interest_score": 5.0,
+    "primary_network": "instagram",
+    "threads_network": "threads",
+    "video_network": "tiktok",
+    "fast_chat_network": "telegram",
+    "harvest_external_handles": true
+  },
+  "growth_strategies": {
+    "instagram_funnel": {
+      "name": "Instagram Story & Visual Bridge",
+      "description": "Перевод диалога в Instagram, где девушка видит сторис, хайлайтс, образ жизни и подписывается",
+      "templates": {
+        "ru": [
+          "Слушай, в Тиндере вечно уведомления через раз приходят. Давай лучше в инсте спишемся: {handle} (или кидай свою, найду тебя 😉)",
+          "Кстати, у тебя классный вайб фоток. Обменяемся инстой? Моя: {handle} 🙂",
+          "Только сегодня выложил сторис/рилс про это) Го в инсту, там я быстрее отвечаю: {handle}"
+        ],
+        "uk": [
+          "Слухай, у Тіндері сповіщення вічно запізнюються. Давай краще в інсті: {handle} (або скидай свою, підпишусь 😉)",
+          "До речі, у тебе дуже гарний візуальний вайб. Обміняємось інстою? Моя: {handle} 🙂",
+          "Як раз сьогодні виклав кумедне відео про це) Го в інсту, там я значно частіше: {handle}"
+        ],
+        "en": [
+          "Honestly Tinder notifications are super glitchy for me. Let’s connect on Instagram instead: {handle} (or drop yours and I'll find you 😉)",
+          "Love your photo aesthetic by the way! Let's swap IGs? Mine is {handle} 🙂",
+          "Just posted a hilarious reel about this earlier today haha. Catch me on IG: {handle}"
+        ],
+        "es": [
+          "Oye, las notificaciones de Tinder me fallan bastante. ¿Hablamos mejor por Instagram?: {handle} (o pásame el tuyo 😉)",
+          "¡Por cierto, me encanta el estilo de tus fotos! ¿Nos seguimos en IG? El mío es {handle} 🙂"
+        ]
+      }
+    },
+    "threads_funnel": {
+      "name": "Threads Viral Banter Bridge",
+      "description": "Привлечение подписчиц в Threads через обсуждение забавных тем, мыслей и свиданий",
+      "templates": {
+        "ru": [
+          "Кстати, ты в Threads сидишь? Я там как раз сегодня выложил пару мыслей про эскапизм и свидания, го туда: {handle} 😉",
+          "У тебя острый юмор)) Ты случайно не в Threads пишешь? Заглядывай ко мне: {handle}"
+        ],
+        "uk": [
+          "До речі, ти сидиш у Threads? Я там якраз сьогодні запостив пару думок про побачення, залітай: {handle} 😉",
+          "У тебе класний гумор)) Пишеш щось у Threads? Мій нік: {handle}"
+        ],
+        "en": [
+          "By the way, are you on Threads? I literally just posted an unfiltered take on dating apps there: {handle} 😉",
+          "You have great banter)) You’d love my Threads feed, drop by: {handle}"
+        ]
+      }
+    },
+    "tiktok_funnel": {
+      "name": "TikTok Humor & Trend Sharing",
+      "description": "Обмен тиктоками и перелив аудитории на вирусные видео",
+      "templates": {
+        "ru": [
+          "Видела в тиктоке этот тренд? Я как раз снял пародию на него: {handle} 😂",
+          "Кстати, скину тебе один угарный тикток на эту тему, куда лучше — в инст или тг?"
+        ],
+        "uk": [
+          "Бачила в тіктоці цей тренд? Я якраз зняв пародію на нього: {handle} 😂",
+          "До речі, скину тобі один смішний тікток на цю тему, куди краще — в інст чи тг?"
+        ],
+        "en": [
+          "Did you see that TikTok trend about this? I literally made a video on it: {handle} 😂",
+          "I have to send you a hilarious TikTok about this. Better on IG or TG?"
+        ]
+      }
+    },
+    "telegram_funnel": {
+      "name": "Telegram Fast VIP Chat",
+      "description": "Быстрый переход в личку телеграма или личный блог-канал",
+      "templates": {
+        "ru": [
+          "Тут неудобно чатиться, давай в телегу прыгнем, там могу голосовые/кружочки скинуть: {handle} 😉",
+          "Кидай свой телеграм, спишемся там без лагов Тиндера"
+        ],
+        "uk": [
+          "Тут незручно чатитись, давай у телеграм, там зручніше: {handle} 😉",
+          "Скидай свій телеграм, спишемось там без лагів Тіндера"
+        ],
+        "en": [
+          "Tinder chat is so clumsy. Let’s jump to Telegram: {handle} 😉",
+          "Drop your Telegram handle, way easier to chat there without app bugs"
+        ]
+      }
+    }
+  },
+  "bio_growth_hooks": {
+    "instagram_subtle": "📸 inst: {instagram_handle} (бываю чаще здесь)",
+    "threads_curiosity": "💭 треш-истории и честные мысли в Threads: {threads_handle}",
+    "multichannel": "📍 Kyiv | ☕ coffee & wine | 📸 {instagram_handle} | 💭 {threads_handle}"
+  }
+}

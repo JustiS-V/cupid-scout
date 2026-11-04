@@ -249,10 +249,47 @@ def run_autonomous_loop(limit: int = 50):
     agent = AutonomousMatchSwiper()
     agent.run(max_swipes=limit)
 
+def show_social_funnel():
+    """Показать воронку развития личных соцсетей (Instagram, Threads, TikTok, Telegram)"""
+    from core.social_funnel import SocialFunnelManager, REPORT_PATH
+    import sqlite3
+    from core.social_funnel import DB_PATH
+
+    mgr = SocialFunnelManager()
+    mgr.scan_existing_profiles_for_leads()
+    mgr.generate_full_report()
+
+    with sqlite3.connect(DB_PATH) as conn:
+        conn.row_factory = sqlite3.Row
+        c = conn.cursor()
+        c.execute("SELECT COUNT(*) FROM social_leads")
+        total_leads = c.fetchone()[0]
+        c.execute("SELECT COUNT(*) FROM social_transitions")
+        total_transitions = c.fetchone()[0]
+        c.execute("SELECT * FROM social_leads ORDER BY id DESC LIMIT 10")
+        leads = c.fetchall()
+
+    print("\n" + "="*95)
+    print("🚀 ВОРОНКА РАЗВИТИЯ СОЦСЕТЕЙ ЧЕРЕЗ ТИНДЕР (INSTAGRAM / THREADS / TIKTOK / TELEGRAM):")
+    print("="*95)
+    print(f"• Всего предложено переходов в соцсети: {total_transitions}")
+    print(f"• Всего собрано контактов/лидов кандидаток: {total_leads}")
+    print("="*95)
+    print(f"{'Кандидатка':<18} | {'Сеть':<10} | {'Никнейм':<20} | {'Источник':<15} | {'Статус'}")
+    print("="*95)
+    if not leads:
+        print("  Пока нет зафиксированных переходов. Агент начнет предлагать соцсети на Turn 2-3 диалога!")
+    else:
+        for l in leads:
+            name_age = f"{l['candidate_name']}, {l['age'] or '?'}"
+            print(f"{name_age:<18} | {l['network'].upper():<10} | {l['handle']:<20} | {l['source']:<15} | {l['status']}")
+    print("="*95)
+    print(f"\n📄 Полный интерактивный отчет с воронкой: {REPORT_PATH}\n")
+
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description="Dating AI Agent")
-    parser.add_argument("command", choices=["platforms", "test-eval", "scan", "stats", "history", "matches", "chat", "analytics", "auto-swipe", "loop"], nargs="?", default="platforms")
+    parser.add_argument("command", choices=["platforms", "test-eval", "scan", "stats", "history", "matches", "chat", "analytics", "auto-swipe", "loop", "social"], nargs="?", default="platforms")
     parser.add_argument("--platform", default="tg_leomatchbot", help="ID платформы")
     parser.add_argument("--limit", type=int, default=50, help="Количество анкет")
     args = parser.parse_args()
@@ -277,3 +314,5 @@ if __name__ == "__main__":
         run_auto_swipe(limit=args.limit)
     elif args.command == "loop":
         run_autonomous_loop(limit=args.limit)
+    elif args.command == "social":
+        show_social_funnel()
